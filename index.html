@@ -23,14 +23,25 @@ function readURL(input, x, w, h) {
 }
 
 function build() {
-  
-  for (i = 0; i < 3; i++) {
-    var row = document.createElement('div');
-    var row_height = '29vh';
-    var col_width = '29vw';
 
-    for (j = 0; j < 3; j++) {
-      let n = 3*i + j;
+  $(".target").change( function(){ build() });
+
+  var rows = parseInt($(".target").val());
+  $('#root').html(""); // delete all
+
+  var cols = 3;
+  var margin = 50;
+  var hremain = window.innerHeight - rows*margin;
+  var wremain = window.innerWidth - cols*margin;
+  var cwidth = Math.min(hremain / rows, wremain / cols);
+  
+  for (i = 0; i < rows; i++) {
+    var row = document.createElement('div');
+    var row_height = cwidth.toString() + 'px';
+    var col_width = cwidth.toString() + 'px';
+
+    for (j = 0; j < cols; j++) {
+      let n = cols*i + j;
       let bid = 'button' + n.toString();
       let iid = 'img' + n.toString();
 
@@ -76,17 +87,19 @@ function build() {
 
       row.appendChild(elem);
 
-      if (j < 2) {
+      if (j < (cols-1)) {
         var space = document.createElement('div');
-        space.style.cssText = 'float:left;width:5%;height:30vh';
+        space.style.cssText = 'float:left;height:10vh';
+        space.style.width = margin.toString() + 'px';
         row.appendChild(space);
       }
     }
     $('#root').append(row);
 
-    if (i < 2) {
+    if (i < (rows-1)) {
       var space = document.createElement('div');
-      space.style.cssText = 'float:left;height:5vh;width:100%;';
+      space.style.cssText = 'float:left;width:100%;';
+      space.style.height = margin.toString() + 'px';
       $('#root').append(space);
     }
 
@@ -104,6 +117,9 @@ $(document).ready(function() { build(); });
 </style>
 </head>
 <body>
+  <div style="height:30px">
+    <input class="target" type="number" value="2"></input>
+  </div>
   <div id="root"></div>
 </body>
 </html>
