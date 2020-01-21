@@ -9,12 +9,19 @@
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 <script>
-function readURL(input, x, w, h) {
+
+var imgpaths = [];
+for (i=0; i<100; i++) {
+  imgpaths.push("");
+}
+
+function readURL(input, x, w, h, index) {
   if (input.files && input.files[0]) {
     var reader = new FileReader();
 
     reader.onload = function (e) {
-      $(x).attr('src', e.target.result).width(w).height(h);
+      imgpaths[index] = e.target.result;
+      $(x).attr('src', imgpaths[index]).width(w).height(h);
       $(x).css('display', 'block');
     };
 
@@ -34,8 +41,10 @@ function build() {
   var hremain = window.innerHeight - rows*margin;
   var wremain = window.innerWidth - cols*margin;
   var cwidth = Math.min(hremain / rows, wremain / cols);
+
+  var scroll_rows = 10;
   
-  for (i = 0; i < rows; i++) {
+  for (i = 0; i < scroll_rows; i++) {
     var row = document.createElement('div');
     var row_height = cwidth.toString() + 'px';
     var col_width = cwidth.toString() + 'px';
@@ -57,10 +66,13 @@ function build() {
 
       var img = document.createElement('img');
       img.id = iid;
-      img.style.cssText = 'display:none;'
+      
+      if (imgpaths[n] == "") {
+        img.style.cssText = 'display:none;'
+      }
+      img.src = imgpaths[n];
       img.style.width = col_width;
       img.style.height = row_height;
-      img.src = ""
 
       var buttonW = document.createElement('div');
       buttonW.style.cssText = 'position:absolute;zIndex:2;';
@@ -76,7 +88,7 @@ function build() {
       button.id = 'button' + n.toString();
       button.type = 'file';
       button.onchange = function(){
-        readURL(this, '#' + iid, col_width, row_height);};
+        readURL(this, '#' + iid, col_width, row_height, n);};
       
 
       imgwrapper.appendChild(img);
@@ -96,7 +108,7 @@ function build() {
     }
     $('#root').append(row);
 
-    if (i < (rows-1)) {
+    if (i < (scroll_rows-1)) {
       var space = document.createElement('div');
       space.style.cssText = 'float:left;width:100%;';
       space.style.height = margin.toString() + 'px';
