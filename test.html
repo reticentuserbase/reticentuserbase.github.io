@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<meta charset=utf-8 />
+<title>JS Bin</title>
+<!--[if IE]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script>
+function readURL(input, x, w, h) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      $(x).attr('src', e.target.result).width(w).height(h);
+      $(x).css('display', 'block');
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function build() {
+  
+  for (i = 0; i < 3; i++) {
+    var row = document.createElement('div');
+    var row_height = '29vh';
+    var col_width = '29vw';
+
+    for (j = 0; j < 3; j++) {
+      let n = 3*i + j;
+      let bid = 'button' + n.toString();
+      let iid = 'img' + n.toString();
+
+      var elem = document.createElement('div');
+      elem.style.cssText = 'float:left;background-color:#f8f8f8';
+      elem.style.width = col_width;
+      elem.style.height = row_height;
+      
+      var imgwrapper = document.createElement('div');
+      imgwrapper.style.cssText = 'position:absolute;zIndex:1;';
+      imgwrapper.width = col_width;
+      imgwrapper.style.height = row_height;
+
+      var img = document.createElement('img');
+      img.id = iid;
+      img.style.cssText = 'display:none;'
+      img.style.width = col_width;
+      img.style.height = row_height;
+      img.src = ""
+
+      var buttonW = document.createElement('div');
+      buttonW.style.cssText = 'position:absolute;zIndex:2;';
+      buttonW.style.width = col_width;
+      buttonW.style.height = row_height;
+      buttonW.onmouseover = function(){
+        document.getElementById(bid).style.display = 'block'};
+      buttonW.onmouseout = function(){
+        document.getElementById(bid).style.display = 'none'};
+
+      var button = document.createElement('input');
+      button.style.cssText = 'display:none;';
+      button.id = 'button' + n.toString();
+      button.type = 'file';
+      button.onchange = function(){
+        readURL(this, '#' + iid, col_width, row_height);};
+      
+
+      imgwrapper.appendChild(img);
+      elem.appendChild(imgwrapper);
+      
+      buttonW.appendChild(button);
+      elem.appendChild(buttonW);
+
+      row.appendChild(elem);
+
+      if (j < 2) {
+        var space = document.createElement('div');
+        space.style.cssText = 'float:left;width:5%;height:30vh';
+        row.appendChild(space);
+      }
+    }
+    $('#root').append(row);
+
+    if (i < 2) {
+      var space = document.createElement('div');
+      space.style.cssText = 'float:left;height:5vh;width:100%;';
+      $('#root').append(space);
+    }
+
+  }
+
+};
+
+$(document).ready(function() { build(); });
+
+</script>
+
+<style>
+  article, aside, figure, footer, header, hgroup, 
+  menu, nav, section { display: block; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
